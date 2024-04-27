@@ -47,7 +47,6 @@ class World {
     requestAnimationFrame(() => {
       self.draw();
     });
-    console.log("World is drawn");
   }
   addObjectsToMap(objects) {
     objects.forEach((o) => {

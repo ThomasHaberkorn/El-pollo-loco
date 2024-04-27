@@ -11,6 +11,7 @@ class MovableObject {
   speedY = 0;
   acceleration = 5;
   energy = 100;
+  lastHit = 0;
 
   applyGravity() {
     setInterval(() => {
@@ -67,7 +68,7 @@ class MovableObject {
   }
 
   playAnimation(images) {
-    let i = this.currentImage % this.IMAGES_WALKING.length;
+    let i = this.currentImage % images.length;
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImage++;
@@ -75,9 +76,18 @@ class MovableObject {
 
   hit() {
     this.energy -= 5;
-    if (this.energy <= 0) {
+    console.log("Hit", this.energy);
+    if (this.energy < 0) {
       this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
     }
+  }
+
+  isHurt() {
+    let timePassed = new Date().getTime() - this.lastHit;
+    timePassed = timePassed / 1000;
+    return timePassed < 1;
   }
 
   isDead() {
@@ -85,6 +95,13 @@ class MovableObject {
   }
 
   isColliding(obj) {
+    // return (
+    //   this.x + this.width >= obj.x &&
+    //   this.x <= obj.x + obj.width &&
+    //   this.y + this.offsetY + this.height >= obj.y &&
+    //   this.y + this.offsetY <= obj.y + obj.height &&
+    //   obj.onCollisionCourse
+    // );
     return this.x + this.width >= obj.x && this.x <= obj.x + obj.width && this.y + this.height >= obj.y && this.y <= obj.y + obj.height;
 
     // return this.x + this.width >= obj.x && this.x <= obj.x + obj.width && this.y + this.offsetY + this.height >= obj.y && this.y + this.offsetY <= obj.y + obj.height;

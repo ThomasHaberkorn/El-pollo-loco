@@ -21,17 +21,86 @@ class World {
   setWorld() {
     this.character.world = this;
   }
-
+  coin_sound = new Audio("audio/coin.mp3");
+  bottle_sound = new Audio("audio/bottle.mp3");
+  // checkCollisions() {
+  //   setInterval(() => {
+  //     this.level.enemies.forEach((enemy) => {
+  //       if (this.character.isColliding(enemy)) {
+  //         this.character.hit();
+  //         this.statusbar.setPercentage(this.character.energy);
+  //         console.log("Collision with character", this.character.energy);
+  //       }
+  //     });
+  //   }, 200);
+  // }
   checkCollisions() {
     setInterval(() => {
       this.level.enemies.forEach((enemy) => {
         if (this.character.isColliding(enemy)) {
-          this.character.hit();
-          this.statusbar.setPercentage(this.character.energy);
-          console.log("Collision with character", this.character.energy);
+          if (this.characterLandsOnEnemy(enemy)) {
+            enemy.chickenDead();
+            enemy.isAlive = false;
+            console.log("Chicken hit by character");
+          } else if (enemy.isAlive == true) {
+            this.character.hit();
+            this.statusbar.setPercentage(this.character.energy);
+            console.log("Collision with character", this.character.energy);
+          }
         }
       });
-    }, 200);
+    }, 20);
+
+    setInterval(() => {
+      [this.level.bottles, this.level.coins].forEach((items) => {
+        items.forEach((item, index) => {
+          if (this.character.isCollidingItem(item)) {
+            if (item === this.level.bottles[index]) {
+              this.addBottle(index);
+              console.log("bottle taken", this.character.bottles);
+            } else {
+              this.addCoin(index);
+              console.log("index", index);
+              console.log("Coin taken", this.character.coins);
+              console.log("item", item);
+              console.log("items", items);
+            }
+          }
+        });
+      }, 20);
+    });
+  }
+
+  addCoin(index) {
+    this.coin_sound.play();
+    this.level.coins.splice(index, 1);
+    this.character.coins++;
+    this.coinbar.setPercentage(this.character.coins);
+  }
+
+  addBottle(index) {
+    this.bottle_sound.play();
+    this.level.bottles.splice(index, 1);
+    this.character.bottles++;
+    this.bottlebar.setPercentage(this.character.bottles);
+  }
+
+  //   checkCollisionWithItems() {
+  //     [this.level.bottles, this.level.coins].forEach(items => {
+  //         items.forEach((item, index) => {
+  //             if (this.character.isColliding(item)) {
+  //                 if (items === this.level.bottles) {
+  //                     this.addbottle(index)
+  //                 } else {
+  //                     this.addCoin(index);
+  //                 }
+  //             }
+  //         });
+  //     });
+  // }
+
+  characterLandsOnEnemy() {
+    return this.character.speedY < 0;
   }
 
   draw() {
@@ -64,14 +133,14 @@ class World {
       this.addToMap(o);
     });
   }
+
   addToMap(mo) {
     if (mo.otherDirection) {
       this.flipImage(mo);
     }
-
     mo.draw(this.ctx);
     mo.drawFrame(this.ctx);
-
+    mo.drawCollisionFrame(this.ctx);
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }

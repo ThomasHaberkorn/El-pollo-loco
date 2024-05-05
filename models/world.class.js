@@ -23,6 +23,7 @@ class World {
   }
   coin_sound = new Audio("audio/coin.mp3");
   bottle_sound = new Audio("audio/bottle.mp3");
+  chicken_sound = new Audio("audio/singleChickenAlert.mp3");
   // checkCollisions() {
   //   setInterval(() => {
   //     this.level.enemies.forEach((enemy) => {
@@ -40,6 +41,7 @@ class World {
         if (this.character.isColliding(enemy)) {
           if (this.characterLandsOnEnemy(enemy)) {
             enemy.chickenDead();
+            this.chicken_sound.play();
             enemy.isAlive = false;
             console.log("Chicken hit by character");
           } else if (enemy.isAlive == true) {
@@ -57,13 +59,13 @@ class World {
           if (this.character.isCollidingItem(item)) {
             if (item === this.level.bottles[index]) {
               this.addBottle(index);
-              console.log("bottle taken", this.character.bottles);
+              // console.log("bottle taken", this.character.bottles);
             } else {
               this.addCoin(index);
-              console.log("index", index);
-              console.log("Coin taken", this.character.coins);
-              console.log("item", item);
-              console.log("items", items);
+              // console.log("index", index);
+              // console.log("Coin taken", this.character.coins);
+              // console.log("item", item);
+              // console.log("items", items);
             }
           }
         });

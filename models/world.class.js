@@ -7,11 +7,11 @@ class World {
   camera_x = 0;
   lastThrow = 0;
   bottleHit = 0;
+  bottleHitBoss = false;
   statusbar = new StatusBar();
   coinbar = new CoinBar();
   bottlebar = new BottleBar();
   throwableObjects = [];
-
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -76,17 +76,20 @@ class World {
       this.throwableObjects.forEach((bottle) => {
         this.level.enemies.forEach((enemy) => {
           if (bottle.isColliding(enemy)) {
+            // debugger;
             enemy.chickenDead();
             this.chicken_sound.play();
-            this.throwableObjects.bottleHitBoss = true;
+            this.bottleHitBoss = true;
             this.bottleHit++;
             if (this.bottleHit <= 1) {
               enemy.hitsLeft--;
+              enemy.isHurt = true;
             }
             console.log("Chicken hit by bottle");
 
             setTimeout(() => {
               this.bottleHit = 0;
+              this.bottleHitBoss = false;
             }, 700);
           }
         });

@@ -10,7 +10,7 @@ class Endboss extends MovableObject {
     width: 30, // right
     height: 0, // bottom
   };
-
+  dead_interval;
   IMAGES_WALKING = [
     "../img/4_enemie_boss_chicken/1_walk/G1.png",
     "../img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -28,15 +28,21 @@ class Endboss extends MovableObject {
     "../img/4_enemie_boss_chicken/2_alert/G11.png",
     "../img/4_enemie_boss_chicken/2_alert/G12.png",
   ];
+  IMAGE_BOSS_HURT = ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"];
+  IMAGES_DEAD = ["../img/4_enemie_boss_chicken/5_dead/G24.png", "../img/4_enemie_boss_chicken/5_dead/G25.png", "../img/4_enemie_boss_chicken/5_dead/G26.png"];
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_ALERT);
+    this.loadImages(this.IMAGE_BOSS_HURT);
+    this.loadImages(this.IMAGES_DEAD);
     this.x = 450; //2500
     this.animate();
     this.isAlive = true;
     this.hitsLeft = 3;
+    this.isHurt = false;
+    this.isDead = false;
   }
 
   chickenDead() {
@@ -51,8 +57,35 @@ class Endboss extends MovableObject {
 
   animate() {
     setInterval(() => {
-      this.playAnimation(this.IMAGES_ALERT);
+      if (this.isAlive) {
+        this.playAnimation(this.IMAGES_ALERT);
+      }
     }, 1000 / 6);
     // this.moveLeft();
+
+    setInterval(() => {
+      if (this.isHurt) {
+        this.playAnimation(this.IMAGE_BOSS_HURT);
+        setTimeout(() => {
+          this.isHurt = false;
+        }, 700);
+      }
+    }, 1000 / 6);
+
+    this.dead_interval = setInterval(() => {
+      if (!this.isAlive) {
+        this.playAnimation(this.IMAGES_DEAD);
+
+        setTimeout(() => {
+          console.log("enemy", this.dead_interval);
+          this.isDead = true;
+        }, 700);
+      }
+      if (this.isDead) {
+        this.y += 100;
+        clearInterval(this.dead_interval);
+        this.loadImage(this.IMAGES_DEAD[1]);
+      }
+    }, 1000 / 6);
   }
 }

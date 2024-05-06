@@ -23,7 +23,11 @@ class MovableObject extends DrawableObject {
   }
 
   isAbooveGround() {
-    return this.y < 120;
+    if (this instanceof ThrowableObjekts) {
+      return true;
+    } else {
+      return this.y < 120;
+    }
   }
 
   moveRight() {

@@ -1,5 +1,5 @@
 const level1 = new Level(
-  [new SmallChicken(), new SmallChicken(), new SmallChicken(), new SmallChicken(), new Chicken(), new Chicken(), new Chicken(), new Chicken(), new Endboss()],
+  [new Endboss()],
 
   [new Cloud(), new Cloud(), new Cloud()],
   [
@@ -32,7 +32,7 @@ const level1 = new Level(
   [new CoinBar()],
   [new BottleBar()],
 );
-// new Chicken(), new Chicken(), new Chicken(), new Chicken(),
+// new SmallChicken(), new SmallChicken(), new SmallChicken(), new SmallChicken(), new Chicken(), new Chicken(), new Chicken(), new Chicken(),
 // , new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()
 
 // , new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()

@@ -4,9 +4,10 @@ class Level {
   backgroundObjects;
   coins;
   bottles;
+  throwableObjects;
   level_end_x = 720 * 3 + 100;
 
-  constructor(enemies, clouds, backgroundObjects, coins, bottles, statusbar, coinbar, bottlebar, smallChicken) {
+  constructor(enemies, clouds, backgroundObjects, coins, bottles, statusbar, coinbar, bottlebar, smallChicken, throwableObjects) {
     this.enemies = enemies;
     this.clouds = clouds;
     this.backgroundObjects = backgroundObjects;
@@ -16,5 +17,6 @@ class Level {
     this.coinbar = coinbar;
     this.bottlebar = bottlebar;
     this.smallChicken = smallChicken;
+    this.throwableObjects = throwableObjects;
   }
 }

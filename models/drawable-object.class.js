@@ -41,20 +41,20 @@ class DrawableObject {
     }
   }
 
-  drawCollisionFrame(ctx) {
-    if (this instanceof Character || this instanceof Bottle || this instanceof Endboss) {
-      ctx.beginPath();
-      ctx.lineWidth = "1";
-      ctx.strokeStyle = "red";
-      // ctx.rect(this.x + 50, this.y + 50, this.width - 100, this.height - 100);
-      ctx.rect(
-        this.x + this.offset.x,
-        this.y + this.offset.y,
-        this.x + this.width - this.offset.width - (this.x + this.offset.x),
-        this.y + this.height - this.offset.height - (this.y + this.offset.y),
-      );
+  // drawCollisionFrame(ctx) {
+  //   if (this instanceof Character || this instanceof Bottle || this instanceof Endboss) {
+  //     ctx.beginPath();
+  //     ctx.lineWidth = "1";
+  //     ctx.strokeStyle = "red";
+  //     // ctx.rect(this.x + 50, this.y + 50, this.width - 100, this.height - 100);
+  //     ctx.rect(
+  //       this.x + this.offset.x,
+  //       this.y + this.offset.y,
+  //       this.x + this.width - this.offset.width - (this.x + this.offset.x),
+  //       this.y + this.height - this.offset.height - (this.y + this.offset.y),
+  //     );
 
-      ctx.stroke();
-    }
-  }
+  //     ctx.stroke();
+  //   }
+  // }
 }

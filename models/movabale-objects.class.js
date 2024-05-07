@@ -67,6 +67,11 @@ class MovableObject extends DrawableObject {
     return this.energy === 0;
   }
 
+  checkEndbossIndex() {
+    this.bossIndex = world.level.enemies.length - 1;
+    console.log("bossIndex", this.bossIndex);
+  }
+
   taken() {
     this.coins++;
   }

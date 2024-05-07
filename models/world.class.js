@@ -58,6 +58,7 @@ class World {
         if (this.character.isColliding(enemy)) {
           if (this.characterLandsOnEnemy(enemy)) {
             enemy.chickenDead();
+            // this.jump();
             this.chicken_sound.play();
             enemy.isAlive = false;
             console.log("Chicken hit by character");
@@ -115,23 +116,13 @@ class World {
     return this.character.speedY < 0;
   }
 
-  // throwBottle() {
-  //   setInterval(() => {
-  //     if (this.keyboard.UP && this.time()) {
-  //       console.log("Throw2");
-  //       // debugger;
-  //       // this.time();
-  //       let bottle = new ThrowableObjekts(this.character.x, this.character.y);
-  //       this.throwableObjects.push(bottle);
-  //       this.lastThrow = new Date().getTime();
-  //     }
-  //   }, 1000 / 60);
-  // }
+  won() {
+    console.log("You won!");
+    this.loadImage("img/9_intro_outro_screens/win/won_2.png");
+  }
 
-  // time() {
-  //   let timePassed = new Date().getTime() - this.lastThrow;
-  //   timePassed = timePassed / 1000;
-  //   return timePassed < 0.5;
+  // clearAllIntervals() {
+  //   for (let i = 1; i < 9999; i++) window.clearInterval(i);
   // }
 
   throwBottle() {
@@ -187,8 +178,8 @@ class World {
       this.flipImage(mo);
     }
     mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
-    mo.drawCollisionFrame(this.ctx);
+    // mo.drawFrame(this.ctx);
+    // mo.drawCollisionFrame(this.ctx);
     if (mo.otherDirection) {
       this.flipImageBack(mo);
     }

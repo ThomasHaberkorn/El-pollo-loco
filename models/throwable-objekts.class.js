@@ -24,12 +24,13 @@ class ThrowableObjekts extends MovableObject {
 
   world;
   rotate;
+  bossIndex = 0;
   currentImage = 0;
   constructor(x, y) {
-    super().loadImage("img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png");
+    super().loadImage("img/transparent.png");
     this.loadImages(this.IMAGE_ROTATE);
     this.loadImages(this.IMAGE_SPLASH);
-
+    this.checkEndbossIndex();
     this.x = x;
     this.y = y;
     this.width = 50;
@@ -41,13 +42,21 @@ class ThrowableObjekts extends MovableObject {
   }
 
   throw() {
-    this.speedY = 40;
-    this.applyGravity();
-
-    setInterval(() => {
-      this.x += 25;
-    }, 50);
-    this.animate();
+    if (world.level.enemies[`${this.bossIndex}`].isAlive && world.character.bottles > 0) {
+      this.speedY = 40;
+      this.applyGravity();
+      world.character.lastWalkTime();
+      world.character.bottles--;
+      world.bottlebar.setPercentage(world.character.bottles);
+      setInterval(() => {
+        if (!world.character.otherDirection) {
+          this.x += 25;
+        } else {
+          this.x -= 30;
+        }
+      }, 50);
+      this.animate();
+    }
   }
 
   animate() {
@@ -69,13 +78,12 @@ class ThrowableObjekts extends MovableObject {
           this.loadImage("img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png");
           this.bottleHitBoss = false;
           world.throwableObjects.splice(0, 1);
-          console.log("Throw", world.throwableObjects.length);
+          // console.log("Throw", world.throwableObjects.length);w
         }, 300);
       }
     }, 1000 / 8);
   }
 }
-
 // }
 
 // && this.character.bottles > 0

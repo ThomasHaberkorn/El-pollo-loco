@@ -1,5 +1,8 @@
+// let level1;
+// function initLevel(){}
+
 const level1 = new Level(
-  [new Endboss()],
+  [new SmallChicken(), new SmallChicken(), new SmallChicken(), new SmallChicken(), new Chicken(), new Chicken(), new Chicken(), new Chicken(), new Endboss()],
 
   [new Cloud(), new Cloud(), new Cloud()],
   [
@@ -26,8 +29,8 @@ const level1 = new Level(
     new BackgroundObject("../img/5_background/layers/2_second_layer/2.png", 717 * 3),
     new BackgroundObject("../img/5_background/layers/1_first_layer/2.png", 717 * 3),
   ],
-  [new Coin()],
-  [new Bottle()],
+  [new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin(), new Coin()],
+  [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
   [new StatusBar()],
   [new CoinBar()],
   [new BottleBar()],

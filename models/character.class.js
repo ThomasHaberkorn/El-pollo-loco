@@ -3,9 +3,10 @@ class Character extends MovableObject {
   width = 200;
   y = 120;
   speed = 10;
-  lastWalk = 0;
-  isSleeping = false;
-
+  lastWalk = new Date().getTime();
+  // isSleeping = false;
+  idle;
+  sleep;
   offset = {
     x: 25, // left
     y: 110, // top
@@ -84,24 +85,27 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
     this.animate();
+    this.waiting();
+    this.sleeping();
   }
 
   animate() {
     setInterval(() => {
       this.walking_sound.pause();
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.isDead()) {
-        this.isSleeping = false;
+        this.lastWalkTime();
         this.moveRight();
         this.otherDirection = false;
         this.walking_sound.play();
       }
       if (this.world.keyboard.LEFT && this.x > -590 && !this.isDead()) {
-        this.isSleeping = false;
+        this.lastWalkTime();
         this.moveLeft();
         this.otherDirection = true;
         this.walking_sound.play();
       }
       if (this.world.keyboard.SPACE && !this.isAbooveGround() && !this.isDead()) {
+        this.lastWalkTime();
         this.jump();
       }
       this.world.camera_x = -this.x + 80;
@@ -128,23 +132,39 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_JUMPING);
       }
     }, 1000 / 8.5);
-    setInterval(() => {
-      if (!this.isSleeping && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead()) {
+  }
+  waiting() {
+    this.idle = setInterval(() => {
+      if ((!this.time() || this.checkEndbossDown) && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead()) {
+        // console.log("waiting", this.idle);
         this.playAnimation(this.IMAGES_IDLE);
-        setTimeout(() => {
-          this.isSleeping = true;
-        }, 7000);
       }
     }, 1000 / 4);
-    setInterval(() => {
-      if (this.isSleeping && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead()) {
+  }
+
+  sleeping() {
+    this.sleep = setInterval(() => {
+      if (this.time() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead() && !this.checkEndbossDown()) {
+        // console.log("sleeping", this.sleep);
+        // console.log("sleeping1", world.level.enemies[Endboss]);
+        this.checkEndbossDown();
         this.playAnimation(this.IMAGES_SLEEP);
       }
     }, 1000 / 4);
   }
-  // time() {
-  //   let timePassed = new Date().getTime() - this.lastWalk;
-  //   timePassed = timePassed / 1000;
-  //   return timePassed >= 5;
-  // }
+
+  lastWalkTime() {
+    this.lastWalk = new Date().getTime();
+  }
+
+  time() {
+    let timePassed = new Date().getTime() - this.lastWalk;
+    timePassed = timePassed / 1000;
+    return timePassed >= 5 || !this.lastWalk;
+  }
+  checkEndbossDown() {
+    if (this.world.level.enemies[0].isDead) {
+      return true;
+    }
+  }
 }

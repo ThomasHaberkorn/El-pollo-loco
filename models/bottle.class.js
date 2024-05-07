@@ -12,15 +12,11 @@ class Bottle extends MovableObject {
   };
   IMAGES_WALKING = ["../img/6_salsa_bottle/1_salsa_bottle_on_ground.png", "../img/6_salsa_bottle/2_salsa_bottle_on_ground.png"];
 
-  //   constructor() {
-  //     super().loadImage("../img/6_salsa_bottle/1_salsa_bottle_on_ground.png");
-  //     this.loadImages(this.IMAGES_WALKING);
-  //     this.x = 250 + Math.random() * 2000;
-  //   }
   constructor() {
     super();
     let randomImage = this.IMAGES_WALKING[Math.floor(Math.random() * this.IMAGES_WALKING.length)];
     this.loadImage(randomImage);
-    // this.x = 250 + Math.random() * 1800;
+    this.x = 250 + Math.random() * 1800;
+    this.y = 350 + Math.random() * 20;
   }
 }

@@ -1,4 +1,4 @@
-class Coin extends DrawableObject {
+class Coin extends MovableObject {
   height = 150;
   width = 150;
   x = 300;
@@ -10,10 +10,10 @@ class Coin extends DrawableObject {
     height: 50, // bottom
   };
 
-  IMAGES_WALKING = ["../img/8_Coin/coin_1.png", "../img/8_Coin/coin_2.png"];
+  IMAGES_WALKING = ["../img/8_coin/coin_1.png", "../img/8_coin/coin_2.png"];
 
   constructor() {
-    super().loadImage("../img/8_Coin/coin_1.png");
+    super().loadImage("../img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_WALKING);
     this.x = 250 + Math.random() * 1800;
     this.y = 0 + Math.random() * 100;

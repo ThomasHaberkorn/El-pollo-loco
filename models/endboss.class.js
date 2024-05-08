@@ -4,7 +4,6 @@ class Endboss extends MovableObject {
   y = 10;
   x = 450;
   speed = 15;
-
   offset = {
     x: 20, // left
     y: 80, // top
@@ -13,6 +12,8 @@ class Endboss extends MovableObject {
   };
   dead_interval;
   bossAttackWalk;
+  win_sound = new Audio("audio/win.mp3");
+
   IMAGES_WALKING = [
     "../img/4_enemie_boss_chicken/1_walk/G1.png",
     "../img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -44,6 +45,8 @@ class Endboss extends MovableObject {
 
   IMAGE_BOSS_HURT = ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"];
   IMAGES_DEAD = ["../img/4_enemie_boss_chicken/5_dead/G24.png", "../img/4_enemie_boss_chicken/5_dead/G25.png", "../img/4_enemie_boss_chicken/5_dead/G26.png"];
+
+  IMAGES_WON = ["img/9_intro_outro_screens/win/won_2.png"];
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
@@ -140,5 +143,12 @@ class Endboss extends MovableObject {
         this.x -= 0;
       }
     }, 1000 / 6);
+  }
+
+  won() {
+    console.log("You won!");
+    world.playGameSound.pause();
+    this.win_sound.play();
+    this.loadImage(this.IMAGES_WON[0]);
   }
 }

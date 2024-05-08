@@ -135,7 +135,8 @@ class Character extends MovableObject {
   }
   waiting() {
     this.idle = setInterval(() => {
-      if ((!this.time() || this.checkEndbossDown) && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead()) {
+      if (!this.time() || (!this.checkEndbossDown() && !this.isDead())) {
+        // console.log("sleeping1", this.time());
         // console.log("waiting", this.idle);
         this.playAnimation(this.IMAGES_IDLE);
       }
@@ -144,8 +145,9 @@ class Character extends MovableObject {
 
   sleeping() {
     this.sleep = setInterval(() => {
-      if (this.time() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead() && !this.checkEndbossDown()) {
+      if (this.time() && this.checkEndbossDown()) {
         // console.log("sleeping", this.sleep);
+        // clearInterval(this.idle);
         // console.log("sleeping1", world.level.enemies[Endboss]);
         this.checkEndbossDown();
         this.playAnimation(this.IMAGES_SLEEP);
@@ -160,6 +162,7 @@ class Character extends MovableObject {
   time() {
     let timePassed = new Date().getTime() - this.lastWalk;
     timePassed = timePassed / 1000;
+    // console.log("timePassed", timePassed);
     return timePassed >= 5 || !this.lastWalk;
   }
   checkEndbossDown() {
@@ -168,3 +171,8 @@ class Character extends MovableObject {
     }
   }
 }
+
+// if (!this.time() || (this.checkEndbossDown() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead())) {
+
+// sleeping
+// if (this.time() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead() && !this.checkEndbossDown()) {

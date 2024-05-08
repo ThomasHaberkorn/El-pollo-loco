@@ -35,8 +35,6 @@ class ThrowableObjekts extends MovableObject {
     this.y = y;
     this.width = 50;
     this.height = 60;
-    // this.loadImages(this.IMAGE_ROTATE);
-    // this.loadImages(this.IMAGE_SPLASH);
     this.bottleHitBoss = false;
     this.throw();
   }

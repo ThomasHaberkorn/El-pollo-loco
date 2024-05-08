@@ -1,3 +1,4 @@
+let character;
 class World {
   character = new Character();
   level = level1;
@@ -12,6 +13,7 @@ class World {
   coinbar = new CoinBar();
   bottlebar = new BottleBar();
   throwableObjects = [];
+
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
@@ -20,6 +22,8 @@ class World {
     this.setWorld();
     this.run();
     this.checkCollisionBottle();
+
+    this.music();
   }
 
   setWorld() {
@@ -28,6 +32,12 @@ class World {
   coin_sound = new Audio("audio/coin.mp3");
   bottle_sound = new Audio("audio/bottle.mp3");
   chicken_sound = new Audio("audio/singleChickenAlert.mp3");
+
+  playGameSound = new Audio("audio/music.mp3");
+
+  music() {
+    this.playGameSound.play();
+  }
 
   run() {
     setInterval(() => {
@@ -115,15 +125,6 @@ class World {
   characterLandsOnEnemy() {
     return this.character.speedY < 0;
   }
-
-  won() {
-    console.log("You won!");
-    this.loadImage("img/9_intro_outro_screens/win/won_2.png");
-  }
-
-  // clearAllIntervals() {
-  //   for (let i = 1; i < 9999; i++) window.clearInterval(i);
-  // }
 
   throwBottle() {
     if (this.keyboard.UP && this.time()) {

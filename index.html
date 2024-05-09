@@ -34,7 +34,7 @@
 
 </head>
 
-<!-- <body onload="init()"> -->
+
 
 <body>
 
@@ -42,7 +42,8 @@
     <h1>El pollo loco</h1>
     <div id="canvasContainer">
         <img src="img/9_intro_outro_screens/start/startscreen_2.png" class="startscreen" id="startscreen">
-        <div id="upperRow">
+
+        <div id="upperRow" class="upperRow">
             <img src="img/buttons/sound.png" class="controlImg d-none" id="sound" onclick="muteMusic()">
 
             <img src="img/buttons/fullscreen.png" class="controlImg d-none" id="fullscreen" onclick="fullscreen()">
@@ -64,19 +65,50 @@
         </div>
     </div>
     <div class="infoContainer" id="infoContainer">
-        <h3>How to play:</h3>
-        <p>
+        <div class="infoHeadline">
+            <h3 id="howto" onmouseover="showText()" onmouseleave="hideText()">How to play:</h3>
+            <h3 id="licenses" onmouseover="showLicenses()" onmouseleave="hideLicenses()">Licenses:</h3>
+            <h3 id="impressum" onmouseover="showImpressum()" onmouseleave="hideImpressum()">Impressum:</h3>
+        </div>
+        <p id="howToText" class="howToText d-none" onmouseover="showText()" onmouseleave="hideText()">
             Use <span>A</span>, <span>Arrow left</span> or <img src="img/buttons/left.png" class="descImg"> to move
             left.
-            Use <span>D</span>, <span>Arrow right</span> or <img src="img/buttons/right.png" class="descImg"> to move
+            Use <span>D</span>, <span>Arrow right</span> or <img src="img/buttons/right.png" class="descImg"> to
+            move
             right.<br>
             Use <span>Space</span> or <img src="img/buttons/jump.png" class="descImg"> to jump.
-            Use <span>w</span>, <span>Arrow up</span> or <img src="img/buttons/throw.png" class="descImg"> to throw a
+            Use <span>w</span>, <span>Arrow up</span> or <img src="img/buttons/throw.png" class="descImg"> to throw
+            a
             bottle.<br><br>
-            Kill chickens by jumping on them or throwing a bottle at them.<br>
-            Kill the Endboss by throwing multiple bottles at it.<br>
-            Colelect bottles to throw them at the Endboss.<br>
+            Kill chicken by jumping on them or throwing a bottle at them.<br>
+            Collect bottles to throw them at the Endboss.<br>
+            Kill the Boss by throwing multiple bottles at it.<br>
+
         </p>
+        <p id="impressumText" class="impressumText d-none" onmouseover="showImpressum()" onmouseleave="hideImpressum()">
+            <span>Thomas Haberkorn</span><br>
+            <a href="mailto: haberkorn.th@t-online.de">Email: haberkorn.th@t-online.de</a>
+        </p>
+        <p id="licensesText" class="licensesText d-none" onmouseover="showLicenses()" onmouseleave="hideLicenses()">
+            <span>Buttons:</span>
+            <a href='https://pngtree.com/freepng/game-ui-kit_5999367.html' target="_blank"> png
+                image from
+                pngtree.com</a><br>
+            <span>Backgroung Image:</span>
+            <a href="https://www.vecteezy.com/free-vector/desert" target="_blank">Desert
+                Vectors by Vecteezy</a><br>
+            <span>(Attack) Sound Effect by:</span>
+            <a
+                href="https://pixabay.com/de/users/alesiadavina-32608554/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=148627">
+                AlesiaDavina </a>
+            from <a
+                href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=148627">Pixabay</a><br>
+            <span>(Lost) Sound Effect from</span><a
+                href="https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6435">
+                Pixabay</a>
+
+        </p>
+
     </div>
 
     <!-- <a
@@ -84,6 +116,7 @@
         von brgfx auf Freepik</a> -->
     <!-- <a href='https://pngtree.com/freepng/game-ui-kit_5999367.html'>png image from pngtree.com/</a> -->
     <!-- <a href="https://www.vecteezy.com/free-vector/desert">Desert Vectors by Vecteezy</a> -->
+    <!-- Sound Effect by <a href="https://pixabay.com/de/users/alesiadavina-32608554/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=148627">AlesiaDavina</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=148627">Pixabay</a> -->
 </body>
 
 </html>

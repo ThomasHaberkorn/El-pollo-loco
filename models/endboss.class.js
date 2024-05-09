@@ -1,3 +1,10 @@
+/**
+ * Represents the endboss character in the game, a formidable enemy with complex behaviors including walking, alerting, attacking, and dying animations.
+ * This class handles various states of the endboss and manages transitions between these states based on game events.
+ *
+ * @class
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
   width = 300;
   height = 450;
@@ -13,7 +20,7 @@ class Endboss extends MovableObject {
   dead_interval;
   bossAttackWalk;
   win_sound = new Audio("audio/win.mp3");
-
+  attack_sound = new Audio("audio/attack.mp3");
   IMAGES_WALKING = [
     "../img/4_enemie_boss_chicken/1_walk/G1.png",
     "../img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -46,8 +53,10 @@ class Endboss extends MovableObject {
   IMAGE_BOSS_HURT = ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"];
   IMAGES_DEAD = ["../img/4_enemie_boss_chicken/5_dead/G24.png", "../img/4_enemie_boss_chicken/5_dead/G25.png", "../img/4_enemie_boss_chicken/5_dead/G26.png"];
 
-  IMAGES_WON = ["img/9_intro_outro_screens/win/won_2.png"];
-
+  /**
+   * Initializes a new instance of the Endboss class.
+   * Loads images, sets initial properties, and starts the main animation loop.
+   */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -74,47 +83,78 @@ class Endboss extends MovableObject {
     return !this.isAlive;
   }
 
+  /**
+   * Manages the animation logic for the endboss, handling its behavior when hurt, attacking, or dying.
+   */
   animate() {
     setInterval(() => {
-      if (this.isHurt) {
-        this.playAnimation(this.IMAGE_BOSS_HURT);
-        setTimeout(() => {
-          this.isHurt = false;
-        }, 700);
-      }
+      this.bossHurtAnimation();
+    }, 100);
+
+    setInterval(() => {
+      this.setBossAngry();
     }, 1000 / 6);
 
     setInterval(() => {
-      if (world.character.x > 2000 && !this.angry) {
-        this.bossAnimation();
-        this.bossAttack();
-        this.angry = true;
-        // console.log("Bosswalk", this.bossMoveLeft());
-      }
-    }, 1000 / 6);
-
-    this.dead_interval = setInterval(() => {
-      if (!this.isAlive) {
-        clearInterval(this.bossAttackWalk);
-        this.playAnimation(this.IMAGES_DEAD);
-
-        setTimeout(() => {
-          console.log("enemy", this.dead_interval);
-          this.isDead = true;
-        }, 700);
-      }
-      if (this.isDead) {
-        this.y += 100;
-        clearInterval(this.dead_interval);
-        this.loadImage(this.IMAGES_DEAD[1]);
-        setTimeout(() => {
-          world.level.enemies.splice(8, 1);
-          this.won();
-        }, 1000);
-      }
+      this.deadAnimation();
     }, 1000 / 6);
   }
 
+  /**
+   * Plays the hurt animation sequence for the endboss when it is hurt.
+   * Resets the hurt status after a short delay, allowing for a temporary visual effect.
+   */
+  bossHurtAnimation() {
+    if (this.isHurt) {
+      this.playAnimation(this.IMAGE_BOSS_HURT);
+      setTimeout(() => {
+        this.isHurt = false;
+      }, 700);
+    }
+  }
+
+  /**
+   * Checks if the endboss should become angry based on the player's position.
+   * If conditions are met (player near and not already angry), triggers attack animations and sounds.
+   */
+  setBossAngry() {
+    if (world.character.x > 2000 && !this.angry) {
+      this.bossAnimation();
+      this.bossAttack();
+      attackSound();
+      this.soundAttach();
+      this.angry = true;
+    }
+  }
+
+  /**
+   * Manages the death animation of the endboss.
+   * Once the boss is confirmed dead, it plays the death animation and eventually removes the boss from the game,
+   * triggering the end of level or game win condition.
+   */
+  deadAnimation() {
+    if (!this.isAlive) {
+      clearInterval(this.bossAttackWalk);
+      this.playAnimation(this.IMAGES_DEAD);
+      setTimeout(() => {
+        this.isDead = true;
+      }, 700);
+    }
+    if (this.isDead) {
+      this.y += 100;
+      clearInterval(this.dead_interval);
+      this.loadImage(this.IMAGES_DEAD[1]);
+      setTimeout(() => {
+        world.level.enemies.splice(8, 1);
+        clearInterval(world.runcheck);
+        gameOver("won");
+      }, 1000);
+    }
+  }
+
+  /**
+   * Specific animations and behaviors for the endboss during its attack phase.
+   */
   bossAnimation() {
     this.i = 0;
     this.bossAttackWalk = setInterval(() => {
@@ -124,10 +164,12 @@ class Endboss extends MovableObject {
         this.playAnimation(this.IMAGES_ATTACK);
       }
       this.i++;
-      console.log("i", this.i);
     }, 1000 / 6);
   }
 
+  /**
+   * Handles the endboss's attack movement, decreasing the position incrementally based on remaining hits.
+   */
   bossAttack() {
     setInterval(() => {
       if (this.hitsLeft === 3) {
@@ -145,10 +187,7 @@ class Endboss extends MovableObject {
     }, 1000 / 6);
   }
 
-  won() {
-    console.log("You won!");
+  soundAttach() {
     world.playGameSound.pause();
-    this.win_sound.play();
-    this.loadImage(this.IMAGES_WON[0]);
   }
 }

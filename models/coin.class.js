@@ -1,3 +1,10 @@
+/**
+ * Represents a coin in the game. Coins are collectible items that animate on the screen.
+ * This class manages the visual representation and animation of a coin.
+ *
+ * @class
+ * @extends MovableObject
+ */
 class Coin extends MovableObject {
   height = 150;
   width = 150;
@@ -12,6 +19,10 @@ class Coin extends MovableObject {
 
   IMAGES_WALKING = ["../img/8_coin/coin_1.png", "../img/8_coin/coin_2.png"];
 
+  /**
+   * Initializes a new instance of the Coin class. Loads the initial image and sets random properties for position.
+   * Begins animation of the coin.
+   */
   constructor() {
     super().loadImage("../img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -20,6 +31,11 @@ class Coin extends MovableObject {
     this.animate();
     this.coins = 0;
   }
+
+  /**
+   * Animates the coin by cycling through images to simulate spinning.
+   * The animation runs at 2 frames per second.
+   */
   animate() {
     setInterval(() => {
       this.playAnimation(this.IMAGES_WALKING);

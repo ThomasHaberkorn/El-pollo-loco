@@ -45,7 +45,6 @@ class MovableObject extends DrawableObject {
 
   hit() {
     this.energy -= 0.15;
-    // console.log("Hit", this.energy);
     if (this.energy < 0) {
       this.energy = 0;
     } else {
@@ -69,16 +68,11 @@ class MovableObject extends DrawableObject {
 
   checkEndbossIndex() {
     this.bossIndex = world.level.enemies.length - 1;
-    console.log("bossIndex", this.bossIndex);
   }
 
   taken() {
     this.coins++;
   }
-
-  // chickenDead() {
-  //   return true;
-  // }
 
   isColliding(obj) {
     return this.x + this.width - this.offset.x >= obj.x && this.x <= obj.x + obj.width && this.y + this.height - this.offset.height >= obj.y && this.y <= obj.y + obj.height;
@@ -92,21 +86,3 @@ class MovableObject extends DrawableObject {
     );
   }
 }
-
-// this.x + this.width - this.offset.x >= obj.x + obj.offset.x &&
-// this.x <= obj.x + obj.width &&
-// this.y + 200 + this.height >= obj.y &&
-// this.y + this.offset.x <= obj.y + obj.height - obj.offset.height
-
-// return (
-//   this.x + this.width >= obj.x &&
-//   this.x <= obj.x + obj.width &&
-//   this.y + this.offsetY + this.height >= obj.y &&
-//   this.y + this.offsetY <= obj.y + obj.height &&
-//   obj.onCollisionCourse
-// );
-
-// return this.x + this.width >= obj.x && this.x <= obj.x + obj.width && this.y + this.offsetY + this.height >= obj.y && this.y + this.offsetY <= obj.y + obj.height;
-
-// obj.onCollisionCourse
-// Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.

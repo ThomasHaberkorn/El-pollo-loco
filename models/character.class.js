@@ -4,7 +4,6 @@ class Character extends MovableObject {
   y = 120;
   speed = 10;
   lastWalk = new Date().getTime();
-  // isSleeping = false;
   idle;
   sleep;
   offset = {
@@ -83,6 +82,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
+    // this.loadImage();
     this.applyGravity();
     this.animate();
     this.waiting();
@@ -111,28 +111,61 @@ class Character extends MovableObject {
       this.world.camera_x = -this.x + 80;
     }, 1000 / 25);
 
-    setInterval(() => {
+    // this.deadinterval = setInterval(() => {
+    //   if ((this.world.keyboard.RIGHT && !this.isAbooveGround()) || (this.world.keyboard.LEFT && !this.isAbooveGround())) {
+    //     if (!this.isDead()) {
+    //       console.log("walking");
+    //       this.playAnimation(this.IMAGES_WALKING);
+    //     }
+    //     else {
+    //       this.lost();
+    //       console.log("dead", this.deadinterval);
+    //       this.playAnimation(this.IMAGES_DEAD);
+    //     }
+    //   }
+    // }, 1000 / 12);
+
+    this.deadinterval = setInterval(() => {
       if ((this.world.keyboard.RIGHT && !this.isAbooveGround()) || (this.world.keyboard.LEFT && !this.isAbooveGround())) {
         if (this.isDead()) {
+          // console.log("dead123", this.deadinterval);
           this.playAnimation(this.IMAGES_DEAD);
         } else {
+          // console.log("walking");
           this.playAnimation(this.IMAGES_WALKING);
         }
       }
     }, 1000 / 12);
 
-    setInterval(() => {
+    this.deadinterval2 = setInterval(() => {
       if (this.isDead()) {
+        this.lost();
         this.playAnimation(this.IMAGES_DEAD);
-        console.log("dead");
+        // console.log("dead", this.deadinterval2);
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
-        console.log("hurt");
+        // console.log("hurt");
       } else if (this.isAbooveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       }
-    }, 1000 / 8.5);
+    }, 200);
   }
+
+  lost() {
+    // console.log("lost");
+    clearInterval(this.deadinterval);
+    clearInterval(this.deadinterval2);
+    clearInterval(this.idle);
+    clearInterval(this.sleep);
+    setInterval(() => {
+      this.loadImage(this.IMAGES_DEAD[6]);
+    }, 1000 / 12);
+    setTimeout(() => {
+      clearInterval(world.runcheck);
+      gameOver("lost");
+    }, 1000);
+  }
+
   waiting() {
     this.idle = setInterval(() => {
       if (!this.time() || (!this.checkEndbossDown() && !this.isDead())) {
@@ -163,7 +196,7 @@ class Character extends MovableObject {
     let timePassed = new Date().getTime() - this.lastWalk;
     timePassed = timePassed / 1000;
     // console.log("timePassed", timePassed);
-    return timePassed >= 5 || !this.lastWalk;
+    return timePassed >= 7 || !this.lastWalk;
   }
   checkEndbossDown() {
     if (this.world.level.enemies[0].isDead) {

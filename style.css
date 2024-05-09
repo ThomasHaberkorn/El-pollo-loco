@@ -28,6 +28,25 @@ body {
   display: none;
 }
 
+.d-noneImp {
+  display: none !important;
+}
+
+.bgBlack {
+  background-color: rgb(73, 73, 73);
+}
+
+.playButtonTransform {
+  display: block;
+  position: absolute;
+  z-index: 100;
+  width: 130px;
+  height: 80px;
+  top: 20px;
+  left: 3%;
+  cursor: pointer;
+}
+
 #canvasContainer {
   position: relative;
   width: 720px;
@@ -59,14 +78,14 @@ h1 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 10;
   border-radius: 30px;
 }
 
 .playButton {
   display: block;
   position: absolute;
-  z-index: 2;
+  z-index: 100;
   width: 150px;
   height: 90px;
   top: 35px;
@@ -98,7 +117,7 @@ h1 {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 20px;
-  z-index: 20;
+  z-index: 5;
   gap: 15px;
   /* border: 1px solid white; */
 }
@@ -116,7 +135,8 @@ h1 {
   margin-right: 120px;
 }
 
-#fullscreen {
+#fullscreen,
+#screen {
   margin-right: 30px;
 }
 .controlImg {
@@ -124,7 +144,7 @@ h1 {
   height: 40px;
   border-radius: 25px;
   cursor: pointer;
-  z-index: 20;
+  z-index: 5;
   /* border: 1px solid white; */
 }
 
@@ -139,11 +159,17 @@ h1 {
   transition: transform 0.2s ease-in-out;
 }
 
+.infoContainer {
+  width: 45rem;
+  height: 200px;
+}
+
 .infoContainer h3 {
   font-size: 30px;
   text-align: center;
   margin: 0;
   padding: 0;
+  cursor: pointer;
 }
 .infoContainer p {
   font-size: 24px;
@@ -155,10 +181,57 @@ h1 {
 .infoContainer span {
   text-decoration: underline;
 }
+
 .descImg {
   width: 15px;
   height: 15px;
   border-radius: 25px;
+}
+
+.infoHeadline {
+  max-width: 700px;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+}
+.infoHeadline h3 {
+  margin-left: 3vw;
+  margin-right: 3vw;
+  white-space: nowrap;
+}
+
+.infoHeadline p {
+  line-height: 26px;
+  margin-bottom: -10px;
+}
+
+.impressumText span {
+  text-decoration: none;
+}
+
+.impressumText a {
+  text-decoration: none;
+  color: black;
+}
+
+.impressumText a:hover {
+  color: white;
+}
+
+.licensesText a {
+  text-decoration: none;
+  color: black;
+}
+
+.licensesText span:hover {
+  color: black;
+}
+
+.licensesText a:hover {
+  color: white;
 }
 
 @media only screen and (max-width: 720px) {
@@ -186,30 +259,46 @@ h1 {
   .infoContainer {
     display: none;
   }
+  /* #fullscreen,
+  #screen {
+    display: none;
+  } */
 }
 
 @media only screen and (max-height: 480px) {
   #canvasContainer {
     height: 100vh;
     width: 100%;
+
+    /* width: 100vh;
+    height: 100vw; */
   }
   .infoContainer {
     display: none;
   }
-
+  .playButton {
+    top: 20px;
+  }
   #canvas,
   .startscreen {
     height: 100vh;
     object-fit: contain;
-
     border-radius: 0px;
   }
-  /* #left,
+  /* #fullscreen,
+  #screen {
+    display: none;
+  } */
+  /* #sound {
+    margin-right: 120px;
+  } */
+
+  #left,
   #right,
   #throw,
   #jump {
     display: block;
-  } */
+  }
 
   h1 {
     display: none;

@@ -40,8 +40,9 @@ class World {
   }
 
   run() {
-    setInterval(() => {
+    this.runCheck = setInterval(() => {
       this.throwBottle();
+      console.log("ThrowRunCheck", this.runCheck);
     }, 1000 / 60);
 
     setInterval(() => {
@@ -68,14 +69,11 @@ class World {
         if (this.character.isColliding(enemy)) {
           if (this.characterLandsOnEnemy(enemy)) {
             enemy.chickenDead();
-            // this.jump();
             this.chicken_sound.play();
             enemy.isAlive = false;
-            console.log("Chicken hit by character");
           } else if (enemy.isAlive == true) {
             this.character.hit();
             this.statusbar.setPercentage(this.character.energy);
-            console.log("Collision with character", this.character.energy);
           }
         }
       });

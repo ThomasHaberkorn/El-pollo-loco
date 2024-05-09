@@ -1,29 +1,29 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-
+let win_sound = new Audio("audio/win.mp3");
+let attack_sound = new Audio("audio/attack.mp3");
 let welcomesound = new Audio("audio/audio_el_pollo_loco.mp3");
-// let playGameSound = new Audio("audio/music.mp3");
-
-function init() {
-  // initLevel();
-  // canvas = document.getElementById("canvas");
-  // world = new World(canvas, keyboard);
-  // console.log("My Character is", world.character);
-  // console.log("My Enemies are", world.enemies);
-}
-
+let gameOverSound = new Audio("audio/game-over.mp3");
+let timeout;
+/**
+ * Initializes and starts the game by setting up the level, creating the game world, playing the welcome sound,
+ * and binding necessary event handlers. This function is called to begin gameplay.
+ */
 function play() {
-  // init();
   initLevel();
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
   welcomesound.play();
-  // playGameSound.play();
   removeDnoneToPlay();
   bindBtsPressEvents();
+  handleResize();
 }
 
+/**
+ * Sets the corresponding property in the 'keyboard' object to true when specific keys are pressed.
+ * This helps track the state of directional keys and spacebar for game controls.
+ */
 window.addEventListener("keydown", (e) => {
   if (e.keyCode == 39 || e.keyCode == 68) {
     keyboard.RIGHT = true;
@@ -38,6 +38,10 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+/**
+ * Resets the corresponding property in the 'keyboard' object to false when specific keys are released.
+ * Ensures accurate tracking of key states for gameplay, preventing unintended continuous actions.
+ */
 window.addEventListener("keyup", (e) => {
   if (e.keyCode == 39 || e.keyCode == 68) {
     keyboard.RIGHT = false;
@@ -52,7 +56,21 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
+/**
+ * Binds touch event handlers to on-screen control buttons for left, right, jump, and up actions.
+ */
 function bindBtsPressEvents() {
+  keybindLeft();
+  keybindRight();
+  keybindJump();
+  keybindUp();
+}
+
+/**
+ * Binds touch events to the 'left' button to control left movement in the game.
+ * Touch start sets the LEFT key state to true, and touch end sets it to false.
+ */
+function keybindLeft() {
   document.getElementById("left").addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.LEFT = true;
@@ -61,7 +79,13 @@ function bindBtsPressEvents() {
     e.preventDefault();
     keyboard.LEFT = false;
   });
+}
 
+/**
+ * Binds touch events to the 'right' button to control right movement in the game.
+ * Touch start sets the RIGHT key state to true, and touch end sets it to false.
+ */
+function keybindRight() {
   document.getElementById("right").addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.RIGHT = true;
@@ -70,7 +94,13 @@ function bindBtsPressEvents() {
     e.preventDefault();
     keyboard.RIGHT = false;
   });
+}
 
+/**
+ * Binds touch events to the 'jump' button to control jumping actions in the game.
+ * Touch start sets the SPACE key state to true, and touch end sets it to false.
+ */
+function keybindJump() {
   document.getElementById("jump").addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.SPACE = true;
@@ -79,7 +109,13 @@ function bindBtsPressEvents() {
     e.preventDefault();
     keyboard.SPACE = false;
   });
+}
 
+/**
+ * Binds touch events to the 'throw' button to control upward actions in the game.
+ * Touch start sets the UP key state to true, and touch end sets it to false.
+ */
+function keybindUp() {
   document.getElementById("throw").addEventListener("touchstart", (e) => {
     e.preventDefault();
     keyboard.UP = true;
@@ -90,48 +126,90 @@ function bindBtsPressEvents() {
   });
 }
 
-// function muteMusic() {
-//   world.playGameSound.muted = !world.playGameSound.muted;
-// }
+/**
+ * Shows a specific text element by removing the 'd-none' class and hides all others.
+ * Clears any previous timeouts to prevent conflicts.
+ * @param {string} idToShow - The ID of the element to show.
+ */
+function showTextElement(idToShow) {
+  clearTimeout(timeout);
+  const elements = ["howToText", "impressumText", "licensesText"];
+  elements.forEach((id) => {
+    const element = document.getElementById(id);
+    if (id === idToShow) {
+      element.classList.remove("d-none");
+    } else {
+      element.classList.add("d-none");
+    }
+  });
+}
 
+/**
+ * Schedules the hiding of a specific text element by adding the 'd-none' class after a delay.
+ * @param {string} idToHide - The ID of the element to hide.
+ */
+function hideTextElement(idToHide) {
+  timeout = setTimeout(() => {
+    document.getElementById(idToHide).classList.add("d-none");
+  }, 1500);
+}
+
+function showText() {
+  showTextElement("howToText");
+}
+
+function hideText() {
+  hideTextElement("howToText");
+}
+
+function showImpressum() {
+  showTextElement("impressumText");
+}
+
+function hideImpressum() {
+  hideTextElement("impressumText");
+}
+
+function showLicenses() {
+  showTextElement("licensesText");
+}
+
+function hideLicenses() {
+  hideTextElement("licensesText");
+}
+
+/**
+ * Toggles the mute state of the game's background music.
+ * Updates the sound button icon based on the mute state.
+ */
 function muteMusic() {
-  // Toggle den 'muted' Status der Musik
   world.playGameSound.muted = !world.playGameSound.muted;
-
-  // Wechsel des Bildes basierend auf dem 'muted' Status
   var soundImage = document.getElementById("sound");
   if (world.playGameSound.muted) {
-    soundImage.src = "img/buttons/mute.png"; // Pfad zum 'Mute'-Bild
-  } else {
-    soundImage.src = "img/buttons/sound.png"; // Pfad zum normalen Sound-Bild
+    soundImage.src = "img/buttons/mute.png";
+    soundImage.src = "img/buttons/sound.png";
   }
 }
 
-// window.addEventListener("resize", fullscreen);
-
+/**
+ * Initiates fullscreen mode for the element with the ID 'canvasContainer'.
+ */
 function fullscreen() {
   let fullscreen = document.getElementById("canvasContainer");
   enterFullscreen(fullscreen);
-  document.getElementById("screen").classList.remove("d-none");
-  document.getElementById("fullscreen").classList.add("d-none");
-  if (window.innerHeight < 500) {
-    document.getElementById("left").classList.remove("d-none");
-    document.getElementById("right").classList.remove("d-none");
-    document.getElementById("jump").classList.remove("d-none");
-    document.getElementById("throw").classList.remove("d-none");
-  }
 }
 
+/**
+ * Exits fullscreen mode if it is currently active.
+ */
 function screen() {
   exitFullscreen();
-  document.getElementById("screen").classList.add("d-none");
-  document.getElementById("fullscreen").classList.remove("d-none");
-  document.getElementById("left").classList.add("d-none");
-  document.getElementById("right").classList.add("d-none");
-  document.getElementById("jump").classList.add("d-none");
-  document.getElementById("throw").classList.add("d-none");
 }
 
+/**
+ * Requests fullscreen mode for a specific DOM element. Supports multiple browser APIs.
+ * @param {HTMLElement} element - The DOM element to display in fullscreen.
+ */
 function enterFullscreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
@@ -142,6 +220,9 @@ function enterFullscreen(element) {
   }
 }
 
+/**
+ * Exits fullscreen mode, using the appropriate method available on the document.
+ */
 function exitFullscreen() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
@@ -150,20 +231,140 @@ function exitFullscreen() {
   }
 }
 
+/**
+ * Hides certain UI elements and reveals others, preparing the screen for gameplay.
+ * This function is typically called when transitioning from a menu or start screen to the game itself.
+ */
 function removeDnoneToPlay() {
-  let startscreen = document.getElementById("startscreen");
-  let playbutton = document.getElementById("playButton");
-  // document.getElementById("left").classList.remove("d-none");
-  // document.getElementById("right").classList.remove("d-none");
-  // document.getElementById("jump").classList.remove("d-none");
-  // document.getElementById("throw").classList.remove("d-none");
+  document.getElementById("startscreen").classList.add("d-none");
+  document.getElementById("playButton").classList.add("d-noneImp");
   document.getElementById("sound").classList.remove("d-none");
   document.getElementById("fullscreen").classList.remove("d-none");
-
-  startscreen.remove();
-  playbutton.remove();
+  document.getElementById("upperRow").classList.remove("d-noneImp");
 }
 
-// function removeDnoneToFullscreen() {
-//   btnLeft.classList.remove("d-none");
-// }
+/**
+ * Adjusts visibility of control buttons based on the window size to ensure a responsive UI.
+ * Control elements are shown if the window height is less than 700px, and hidden otherwise.
+ */
+function handleResize() {
+  if (window.innerHeight < 700) {
+    document.getElementById("left").classList.remove("d-none");
+    document.getElementById("right").classList.remove("d-none");
+    document.getElementById("jump").classList.remove("d-none");
+    document.getElementById("throw").classList.remove("d-none");
+  } else {
+    document.getElementById("left").classList.add("d-none");
+    document.getElementById("right").classList.add("d-none");
+    document.getElementById("jump").classList.add("d-none");
+    document.getElementById("throw").classList.add("d-none");
+  }
+}
+
+// Adds an event listener to handle changes in the window size, calling handleResize.
+window.addEventListener("resize", handleResize);
+
+/**
+ * Pauses the game's background sound and plays the attack sound effect.
+ */
+function attackSound() {
+  world.playGameSound.pause();
+  attack_sound.play();
+}
+
+/**
+ * Handles actions to perform at the end of the game, based on the game outcome.
+ * It stops all sounds, clears intervals, updates the UI, and logs the game result.
+ * @param {string} event - Indicates if the game was won or lost ("won" or "lost").
+ */
+function gameOver(event) {
+  clearAllGameSounds();
+  if (event === "lost") {
+    gameOverSound.play();
+    clearAllIntervals();
+    showElementsOnEndScreen();
+    document.getElementById("startscreen").src = "img/lost.png";
+  } else {
+    win_sound.play();
+    clearAllIntervals();
+    showElementsOnEndScreen();
+    document.getElementById("startscreen").src = "img/won.png";
+  }
+}
+
+/**
+ * Modifies UI elements to reflect the end game screen, toggling visibility and styles.
+ */
+function showElementsOnEndScreen() {
+  document.getElementById("upperRow").classList.add("d-noneImp");
+  document.getElementById("playButton").classList.add("playButtonTransform");
+  document.getElementById("playButton").classList.remove("playButton");
+  document.getElementById("startscreen").classList.remove("d-none");
+  document.getElementById("playButton").classList.remove("d-noneImp");
+}
+
+/**
+ * Pauses all game-related sounds.
+ */
+function clearAllGameSounds() {
+  world.playGameSound.pause();
+  attack_sound.pause();
+}
+
+/**
+ * Clears all intervals that have been set in the application.
+ * This is a brute force approach to ensure no lingering intervals remain active.
+ */
+function clearAllIntervals() {
+  for (let i = 1; i < 9999999; i++) window.clearInterval(i);
+}
+
+/**
+ * Checks the fullscreen status of a specific element and applies corresponding classes based on the status.
+ * If the element is in fullscreen mode, it triggers `setClassesForWindowMode`.
+ * Otherwise, it triggers `setClassesForFullscreen`.
+ */
+let myDiv = document.getElementById("canvasContainer");
+
+function checkFullscreenStatus() {
+  if (document.fullscreenElement === myDiv) {
+    setClassesForWindowMode();
+  } else {
+    setClassesForFullscreen();
+  }
+}
+
+/**
+ * Listens for changes in fullscreen status on the document.
+ * Calls `checkFullscreenStatus` when a fullscreen change occurs.
+ */
+document.addEventListener("fullscreenchange", checkFullscreenStatus);
+
+/**
+ * Applies CSS classes for when the application is not in fullscreen mode.
+ * It hides game controls and other UI elements not needed outside of fullscreen mode.
+ */
+function setClassesForWindowMode() {
+  document.getElementById("screen").classList.add("d-none");
+  document.getElementById("fullscreen").classList.remove("d-none");
+  document.getElementById("left").classList.add("d-none");
+  document.getElementById("right").classList.add("d-none");
+  document.getElementById("jump").classList.add("d-none");
+  document.getElementById("throw").classList.add("d-none");
+}
+
+/**
+ * Removes CSS classes that hide certain elements when the application is in fullscreen mode,
+ * especially useful for displaying controls on smaller screens.
+ * If the window's inner height is less than 500 pixels, display controls for left, right, jump, and throw actions.
+ */
+function setClassesForFullscreen() {
+  document.getElementById("screen").classList.remove("d-none");
+  document.getElementById("fullscreen").classList.add("d-none");
+  if (window.innerHeight < 500) {
+    document.getElementById("left").classList.remove("d-none");
+    document.getElementById("right").classList.remove("d-none");
+    document.getElementById("jump").classList.remove("d-none");
+    document.getElementById("throw").classList.remove("d-none");
+  }
+}

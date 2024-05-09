@@ -45,6 +45,7 @@ class ThrowableObjekts extends MovableObject {
       this.applyGravity();
       world.character.lastWalkTime();
       world.character.bottles--;
+      console.log("Throw Bottle", world.character.bottles);
       world.bottlebar.setPercentage(world.character.bottles);
       setInterval(() => {
         if (!world.character.otherDirection) {
@@ -61,7 +62,7 @@ class ThrowableObjekts extends MovableObject {
     this.rotate = setInterval(() => {
       if (!world.bottleHitBoss) {
         this.playAnimation(this.IMAGE_ROTATE);
-        console.log("rotate", this.rotate);
+        console.log("rotate", world.character.bottles);
         setTimeout(() => {
           clearInterval(this.rotate);
         }, 700);

@@ -12,7 +12,7 @@ class Endboss extends MovableObject {
   x = 450;
   speed = 15;
   offset = {
-    x: 20, // left
+    x: 30, // left
     y: 80, // top
     width: 30, // right
     height: 0, // bottom
@@ -67,7 +67,7 @@ class Endboss extends MovableObject {
     this.x = 2500;
     this.animate();
     this.isAlive = true;
-    this.hitsLeft = 3;
+    this.hitsLeft = 5;
     this.isHurt = false;
     this.isDead = false;
     this.angry = false;

@@ -1,3 +1,8 @@
+/**
+ * Represents a small chicken character in the game. This character has unique animations for walking and being dead,
+ * and it includes specialized gravity and movement behaviors.
+ * @extends MovableObject
+ */
 class SmallChicken extends MovableObject {
   y = 335;
   speed = 0.2;
@@ -9,6 +14,10 @@ class SmallChicken extends MovableObject {
 
   IMAGES_DEAD = ["../img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
+  /**
+   * Constructs a new instance of the SmallChicken class, initializing its properties,
+   * loading necessary images, and starting its animation and gravity behaviors.
+   */
   constructor() {
     super().loadImage("../img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -21,14 +30,24 @@ class SmallChicken extends MovableObject {
     this.isAlive = true;
   }
 
+  /**
+   * Sets the chicken's alive status to false, indicating it is dead.
+   */
   chickenDead() {
     this.isAlive = false;
   }
 
+  /**
+   * Checks if the chicken is currently dead.
+   * @returns {boolean} True if the chicken is dead, otherwise false.
+   */
   isNowDead() {
     return !this.isAlive;
   }
 
+  /**
+   * Applies gravity specifically tailored for the chicken, affecting its vertical position and speed.
+   */
   applyGravityChicken() {
     setInterval(() => {
       if (this.isAbooveGroundChicken() || (this.speedY > 0 && this.isAlive)) {
@@ -42,30 +61,59 @@ class SmallChicken extends MovableObject {
     }, 1000 / 10);
   }
 
+  /**
+   * Determines if the chicken is above the ground level specific to chickens.
+   * @returns {boolean} True if above ground, otherwise false.
+   */
   isAbooveGroundChicken() {
     return this.y < 335;
   }
 
+  /**
+   * Manages the animation intervals for moving left and playing animations for walking and death.
+   */
   animate() {
     setInterval(() => {
-      if (this.isAlive) {
-        this.moveLeft();
-      }
+      this.moveLeftAnimation();
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.isAlive) {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
+      this.animateMoving();
     }, 1000 / 6);
 
     setInterval(() => {
-      if (this.isNowDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        setTimeout(() => {
-          this.y = 1000;
-        }, 2000);
-      }
+      this.animateDead();
     }, 1000 / 60);
+  }
+
+  /**
+   * Moves the chicken to the left if it is alive. This method handles the movement animation.
+   */
+  moveLeftAnimation() {
+    if (this.isAlive) {
+      this.moveLeft();
+    }
+  }
+
+  /**
+   * Plays the walking animation for the chicken if it is alive.
+   */
+  animateMoving() {
+    if (this.isAlive) {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  /**
+   * Plays the death animation for the chicken if it is dead. After playing the death animation,
+   * the chicken is moved out of the view after a delay.
+   */
+  animateDead() {
+    if (this.isNowDead()) {
+      this.playAnimation(this.IMAGES_DEAD);
+      setTimeout(() => {
+        this.y = 1000;
+      }, 500);
+    }
   }
 }

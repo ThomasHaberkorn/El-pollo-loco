@@ -17,7 +17,6 @@ function play() {
   welcomesound.play();
   removeDnoneToPlay();
   bindBtsPressEvents();
-  handleResize();
 }
 
 /**
@@ -184,9 +183,16 @@ function hideLicenses() {
  */
 function muteMusic() {
   world.playGameSound.muted = !world.playGameSound.muted;
-  var soundImage = document.getElementById("sound");
+  world.coin_sound.muted = !world.coin_sound.muted;
+  world.bottle_sound.muted = !world.bottle_sound.muted;
+  world.chicken_sound.muted = !world.chicken_sound.muted;
+  world.character.jumping_sound.muted = !world.character.jumping_sound.muted;
+  world.character.walking_sound.muted = !world.character.walking_sound.muted;
+
+  let soundImage = document.getElementById("sound");
   if (world.playGameSound.muted) {
     soundImage.src = "img/buttons/mute.png";
+  } else {
     soundImage.src = "img/buttons/sound.png";
   }
 }
@@ -196,6 +202,9 @@ function muteMusic() {
  */
 function fullscreen() {
   let fullscreen = document.getElementById("canvasContainer");
+  document.getElementById("screen").classList.remove("d-none");
+  document.getElementById("fullscreen").classList.add("d-none");
+  setClassesForFullscreen();
   enterFullscreen(fullscreen);
 }
 
@@ -203,6 +212,9 @@ function fullscreen() {
  * Exits fullscreen mode if it is currently active.
  */
 function screen() {
+  document.getElementById("screen").classList.add("d-none");
+  document.getElementById("fullscreen").classList.remove("d-none");
+  setClassesForFullscreen();
   exitFullscreen();
 }
 
@@ -242,27 +254,6 @@ function removeDnoneToPlay() {
   document.getElementById("fullscreen").classList.remove("d-none");
   document.getElementById("upperRow").classList.remove("d-noneImp");
 }
-
-/**
- * Adjusts visibility of control buttons based on the window size to ensure a responsive UI.
- * Control elements are shown if the window height is less than 700px, and hidden otherwise.
- */
-function handleResize() {
-  if (window.innerHeight < 700) {
-    document.getElementById("left").classList.remove("d-none");
-    document.getElementById("right").classList.remove("d-none");
-    document.getElementById("jump").classList.remove("d-none");
-    document.getElementById("throw").classList.remove("d-none");
-  } else {
-    document.getElementById("left").classList.add("d-none");
-    document.getElementById("right").classList.add("d-none");
-    document.getElementById("jump").classList.add("d-none");
-    document.getElementById("throw").classList.add("d-none");
-  }
-}
-
-// Adds an event listener to handle changes in the window size, calling handleResize.
-window.addEventListener("resize", handleResize);
 
 /**
  * Pauses the game's background sound and plays the attack sound effect.
@@ -320,51 +311,45 @@ function clearAllIntervals() {
 }
 
 /**
- * Checks the fullscreen status of a specific element and applies corresponding classes based on the status.
- * If the element is in fullscreen mode, it triggers `setClassesForWindowMode`.
- * Otherwise, it triggers `setClassesForFullscreen`.
- */
-let myDiv = document.getElementById("canvasContainer");
-
-function checkFullscreenStatus() {
-  if (document.fullscreenElement === myDiv) {
-    setClassesForWindowMode();
-  } else {
-    setClassesForFullscreen();
-  }
-}
-
-/**
- * Listens for changes in fullscreen status on the document.
- * Calls `checkFullscreenStatus` when a fullscreen change occurs.
- */
-document.addEventListener("fullscreenchange", checkFullscreenStatus);
-
-/**
- * Applies CSS classes for when the application is not in fullscreen mode.
- * It hides game controls and other UI elements not needed outside of fullscreen mode.
- */
-function setClassesForWindowMode() {
-  document.getElementById("screen").classList.add("d-none");
-  document.getElementById("fullscreen").classList.remove("d-none");
-  document.getElementById("left").classList.add("d-none");
-  document.getElementById("right").classList.add("d-none");
-  document.getElementById("jump").classList.add("d-none");
-  document.getElementById("throw").classList.add("d-none");
-}
-
-/**
  * Removes CSS classes that hide certain elements when the application is in fullscreen mode,
  * especially useful for displaying controls on smaller screens.
  * If the window's inner height is less than 500 pixels, display controls for left, right, jump, and throw actions.
  */
 function setClassesForFullscreen() {
-  document.getElementById("screen").classList.remove("d-none");
-  document.getElementById("fullscreen").classList.add("d-none");
-  if (window.innerHeight < 500) {
+  let mobile = detectMobileDevice();
+  let touch = hasTouchEvents();
+  if (mobile || touch) {
     document.getElementById("left").classList.remove("d-none");
     document.getElementById("right").classList.remove("d-none");
     document.getElementById("jump").classList.remove("d-none");
     document.getElementById("throw").classList.remove("d-none");
+  } else {
+    document.getElementById("left").classList.add("d-none");
+    document.getElementById("right").classList.add("d-none");
+    document.getElementById("jump").classList.add("d-none");
+    document.getElementById("throw").classList.add("d-none");
   }
+}
+
+/**
+ * Detects if the current device is a mobile device based on the user agent string.
+ * This function checks the browser's user agent string for keywords that identify
+ * mobile devices, such as 'iphone', 'android', etc.
+ *
+ * @returns {boolean} True if the user agent string matches a mobile device, false otherwise.
+ */
+function detectMobileDevice() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(userAgent);
+}
+
+/**
+ * Determines if the current device supports touch events. This function checks
+ * if touch events are available in the window object or if the navigator object
+ * reports any touch points.
+ *
+ * @returns {boolean} True if touch events are supported, false otherwise.
+ */
+function hasTouchEvents() {
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }

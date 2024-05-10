@@ -39,5 +39,6 @@ function initLevel() {
     [new StatusBar()],
     [new CoinBar()],
     [new BottleBar()],
+    [new Bossbar()],
   );
 }

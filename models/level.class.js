@@ -27,7 +27,8 @@ class Level {
    * @param {MovableObject} smallChicken - Special case enemy or object.
    * @param {MovableObject[]} throwableObjects - Array of objects that can be thrown by the player.
    */
-  constructor(enemies, clouds, backgroundObjects, coins, bottles, statusbar, coinbar, bottlebar, smallChicken, throwableObjects) {
+
+  constructor(enemies, clouds, backgroundObjects, coins, bottles, statusbar, coinbar, bottlebar, smallChicken, throwableObjects, bossbar) {
     this.enemies = enemies;
     this.clouds = clouds;
     this.backgroundObjects = backgroundObjects;
@@ -38,5 +39,6 @@ class Level {
     this.bottlebar = bottlebar;
     this.smallChicken = smallChicken;
     this.throwableObjects = throwableObjects;
+    this.bossbar = bossbar;
   }
 }

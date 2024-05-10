@@ -1,3 +1,9 @@
+/**
+ * Represents a character in a game environment that can move, jump, and interact with the game world.
+ * Extends `MovableObject` to inherit basic movement capabilities and adds complex animations and sound effects.
+ *
+ * @extends {MovableObject}
+ */
 class Character extends MovableObject {
   height = 320;
   width = 200;
@@ -6,6 +12,13 @@ class Character extends MovableObject {
   lastWalk = new Date().getTime();
   idle;
   sleep;
+  world;
+  currentImage = 0;
+  walking_sound = new Audio("audio/walking.mp3");
+  jumping_sound = new Audio("audio/jump.mp3");
+  boss;
+  bossx;
+  pepeOffsetX;
   offset = {
     x: 25, // left
     y: 110, // top
@@ -69,11 +82,9 @@ class Character extends MovableObject {
 
   IMAGES_HURT = ["../img/2_character_pepe/4_hurt/H-41.png", "../img/2_character_pepe/4_hurt/H-42.png", "../img/2_character_pepe/4_hurt/H-43.png"];
 
-  world;
-  currentImage = 0;
-  walking_sound = new Audio("audio/walking.mp3");
-  jumping_sound = new Audio("audio/jump.mp3");
-
+  /**
+   * Initializes a new instance of the Character class.
+   */
   constructor() {
     super().loadImage("../img/2_character_pepe/2_walk/W-21.png");
     this.loadImages(this.IMAGES_IDLE);
@@ -82,77 +93,113 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
-    // this.loadImage();
     this.applyGravity();
     this.animate();
     this.waiting();
     this.sleeping();
   }
+  /**
+   * Sets up the character's animations and sets intervals for movement, death, and other actions.
+   */
 
   animate() {
     setInterval(() => {
-      this.walking_sound.pause();
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.isDead()) {
-        this.lastWalkTime();
-        this.moveRight();
-        this.otherDirection = false;
-        this.walking_sound.play();
-      }
-      if (this.world.keyboard.LEFT && this.x > -590 && !this.isDead()) {
-        this.lastWalkTime();
-        this.moveLeft();
-        this.otherDirection = true;
-        this.walking_sound.play();
-      }
-      if (this.world.keyboard.SPACE && !this.isAbooveGround() && !this.isDead()) {
-        this.lastWalkTime();
-        this.jump();
-      }
-      this.world.camera_x = -this.x + 80;
+      this.animationForMoveDirectionAndJump();
     }, 1000 / 25);
 
-    // this.deadinterval = setInterval(() => {
-    //   if ((this.world.keyboard.RIGHT && !this.isAbooveGround()) || (this.world.keyboard.LEFT && !this.isAbooveGround())) {
-    //     if (!this.isDead()) {
-    //       console.log("walking");
-    //       this.playAnimation(this.IMAGES_WALKING);
-    //     }
-    //     else {
-    //       this.lost();
-    //       console.log("dead", this.deadinterval);
-    //       this.playAnimation(this.IMAGES_DEAD);
-    //     }
-    //   }
-    // }, 1000 / 12);
-
     this.deadinterval = setInterval(() => {
-      if ((this.world.keyboard.RIGHT && !this.isAbooveGround()) || (this.world.keyboard.LEFT && !this.isAbooveGround())) {
-        if (this.isDead()) {
-          // console.log("dead123", this.deadinterval);
-          this.playAnimation(this.IMAGES_DEAD);
-        } else {
-          // console.log("walking");
-          this.playAnimation(this.IMAGES_WALKING);
-        }
-      }
+      this.animationWalkDead();
     }, 1000 / 12);
 
     this.deadinterval2 = setInterval(() => {
-      if (this.isDead()) {
-        this.lost();
-        this.playAnimation(this.IMAGES_DEAD);
-        // console.log("dead", this.deadinterval2);
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        // console.log("hurt");
-      } else if (this.isAbooveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-      }
+      this.animationHurtJump();
     }, 200);
   }
 
+  /**
+   * Handles directional movement and jumping based on keyboard input.
+   */
+  animationForMoveDirectionAndJump() {
+    this.walking_sound.pause();
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.isDead()) {
+      this.walkRight();
+      if (this.bossCollision()) {
+        this.x -= this.speed + 1;
+      }
+    }
+    if (this.world.keyboard.LEFT && this.x > -590 && !this.isDead()) {
+      this.walkLeft();
+    }
+    if (this.world.keyboard.SPACE && !this.isAbooveGround() && !this.isDead()) {
+      this.lastWalkTime();
+      this.jump();
+    }
+    this.world.camera_x = -this.x + 80;
+  }
+
+  /**
+   * Checks for collision with the boss enemy.
+   * @returns {boolean} Returns true if there is a collision with the boss enemy, otherwise returns undefined.
+   */
+  bossCollision() {
+    this.boss = this.world.level.enemies[8];
+    this.bossOffsetX = this.boss.x - this.boss.offset.x;
+    this.pepeOffsetX = this.x - this.offset.width;
+    if (this.pepeOffsetX >= this.bossOffsetX) {
+      return true;
+    }
+  }
+  /**
+   * Initiates movement to the right and plays a walking sound.
+   */
+  walkRight() {
+    this.lastWalkTime();
+    this.moveRight();
+    this.otherDirection = false;
+    this.walking_sound.play();
+  }
+
+  /**
+   * Initiates movement to the left and plays a walking sound.
+   */
+  walkLeft() {
+    this.lastWalkTime();
+    this.moveLeft();
+    this.otherDirection = true;
+    this.walking_sound.play();
+  }
+
+  /**
+   * Handles the character's walking or death animation based on the game state.
+   */
+  animationWalkDead() {
+    if ((this.world.keyboard.RIGHT && !this.isAbooveGround()) || (this.world.keyboard.LEFT && !this.isAbooveGround())) {
+      if (this.isDead()) {
+        this.playAnimation(this.IMAGES_DEAD);
+      } else {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
+    }
+  }
+
+  /**
+   * Handles the character's jumping, hurt, or death animations based on the game state.
+   */
+  animationHurtJump() {
+    if (this.isDead()) {
+      this.lost();
+      this.playAnimation(this.IMAGES_DEAD);
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.isAbooveGround()) {
+      this.playAnimation(this.IMAGES_JUMPING);
+    }
+  }
+
+  /**
+   * Executes actions when the character has lost all lives or conditions for defeat are met.
+   */
   lost() {
-    // console.log("lost");
     clearInterval(this.deadinterval);
     clearInterval(this.deadinterval2);
     clearInterval(this.idle);
@@ -166,46 +213,53 @@ class Character extends MovableObject {
     }, 1000);
   }
 
+  /**
+   * Sets up a recurring animation for the character when idle.
+   */
   waiting() {
     this.idle = setInterval(() => {
       if (!this.time() || (!this.checkEndbossDown() && !this.isDead())) {
-        // console.log("sleeping1", this.time());
-        // console.log("waiting", this.idle);
         this.playAnimation(this.IMAGES_IDLE);
       }
     }, 1000 / 4);
   }
 
+  /**
+   * Sets up a recurring animation for the character when sleeping.
+   */
   sleeping() {
     this.sleep = setInterval(() => {
       if (this.time() && this.checkEndbossDown()) {
-        // console.log("sleeping", this.sleep);
-        // clearInterval(this.idle);
-        // console.log("sleeping1", world.level.enemies[Endboss]);
         this.checkEndbossDown();
         this.playAnimation(this.IMAGES_SLEEP);
       }
     }, 1000 / 4);
   }
 
+  /**
+   * Updates the timestamp of the character's last movement.
+   */
   lastWalkTime() {
     this.lastWalk = new Date().getTime();
   }
 
+  /**
+   * Checks if a certain time has passed since the last movement.
+   * @returns {boolean} True if enough time has passed, otherwise false.
+   */
   time() {
     let timePassed = new Date().getTime() - this.lastWalk;
     timePassed = timePassed / 1000;
-    // console.log("timePassed", timePassed);
     return timePassed >= 7 || !this.lastWalk;
   }
+
+  /**
+   * Checks if the end boss of the level is defeated.
+   * @returns {boolean} True if the end boss is down, otherwise false.
+   */
   checkEndbossDown() {
     if (this.world.level.enemies[0].isDead) {
       return true;
     }
   }
 }
-
-// if (!this.time() || (this.checkEndbossDown() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead())) {
-
-// sleeping
-// if (this.time() && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.isAbooveGround() && !this.isDead() && !this.checkEndbossDown()) {

@@ -23,18 +23,10 @@ class Bossbar extends DrawableObject {
     super().loadImage("../img/7_statusbars/2_statusbar_endboss/blue/blue100.png");
     this.loadImages(this.IMAGES);
     this.setPercentage(100);
-    // this.checkHitsLeft();
     this.x = 500;
     this.y = 50;
     this.width = 200;
     this.height = 50;
-  }
-
-  checkHitsLeft(hitsLeft) {
-    this.hitsLeft = hitsLeft;
-    setInterval(() => {
-      this.setHitsLeft(this.hitsLeft);
-    }, 200);
   }
 
   /**

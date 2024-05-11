@@ -8,7 +8,7 @@ class Character extends MovableObject {
   height = 320;
   width = 200;
   y = 120;
-  speed = 10;
+  speed = 5;
   lastWalk = new Date().getTime();
   idle;
   sleep;
@@ -95,6 +95,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
     this.animate();
+    this.moveDirection();
     this.waiting();
     this.sleeping();
   }
@@ -103,10 +104,6 @@ class Character extends MovableObject {
    */
 
   animate() {
-    setInterval(() => {
-      this.animationForMoveDirectionAndJump();
-    }, 1000 / 25);
-
     this.deadinterval = setInterval(() => {
       this.animationWalkDead();
     }, 1000 / 12);
@@ -114,6 +111,12 @@ class Character extends MovableObject {
     this.deadinterval2 = setInterval(() => {
       this.animationHurtJump();
     }, 200);
+  }
+
+  moveDirection() {
+    setInterval(() => {
+      this.animationForMoveDirectionAndJump();
+    }, 1000 / 60);
   }
 
   /**
@@ -124,7 +127,7 @@ class Character extends MovableObject {
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.isDead()) {
       this.walkRight();
       if (this.bossCollision()) {
-        this.x -= this.speed + 1;
+        this.x -= this.speed + 3;
       }
     }
     if (this.world.keyboard.LEFT && this.x > -590 && !this.isDead()) {

@@ -54,22 +54,24 @@ class ThrowableObjekts extends MovableObject {
    * Initiates the throwing action of the object, setting its vertical speed, and applying gravity.
    * Decrements the bottle count from the character and updates the status bar.
    */
-  //&& world.character.bottles > 0
+
   throw() {
-    if (world.level.enemies[`${this.bossIndex}`].isAlive) {
+    if (world.level.enemies[`${this.bossIndex}`].isAlive && world.character.bottles > 0) {
       this.speedY = 35;
       this.applyGravity();
       world.character.lastWalkTime();
       world.character.bottles--;
       world.bottlebar.setPercentage(world.character.bottles);
-      // console.log(world.level.enemies);
-      setInterval(() => {
-        if (!world.character.otherDirection) {
+
+      if (!world.character.otherDirection) {
+        setInterval(() => {
           this.x += 25;
-        } else {
+        }, 50);
+      } else {
+        setInterval(() => {
           this.x -= 30;
-        }
-      }, 50);
+        }, 50);
+      }
       this.animate();
     }
   }

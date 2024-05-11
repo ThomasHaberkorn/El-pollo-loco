@@ -91,12 +91,14 @@ class World {
    * Otherwise, the character takes damage if the enemy is still alive.
    */
   sortDamageWhileColliding() {
-    this.level.enemies.forEach((enemy) => {
+    this.level.enemies.forEach((enemy, index) => {
       if (this.character.isColliding(enemy)) {
         if (this.characterLandsOnEnemy(enemy)) {
           enemy.chickenDead();
           this.chicken_sound.play();
-          enemy.isAlive = false;
+          if (!index == 8) {
+            enemy.isAlive = false;
+          }
         } else if (enemy.isAlive == true) {
           this.character.hit();
           this.statusbar.setPercentage(this.character.energy);
@@ -127,7 +129,6 @@ class World {
       this.chicken_sound.play();
       this.bottleHitBoss = true;
       this.bottleHit++;
-
       if (this.bottleHit <= 1 && this.checkEndboss(enemy)) {
         enemy.hitsLeft--;
         enemy.isHurt = true;
@@ -136,7 +137,7 @@ class World {
       setTimeout(() => {
         this.bottleHit = 0;
         this.bottleHitBoss = false;
-      }, 200);
+      }, 120);
     }
   }
 
@@ -194,7 +195,7 @@ class World {
   time() {
     let timePassed = new Date().getTime() - this.lastThrow;
     timePassed = timePassed / 1000;
-    return timePassed >= 0.7 || !this.lastThrow;
+    return timePassed >= 1;
   }
 
   /**

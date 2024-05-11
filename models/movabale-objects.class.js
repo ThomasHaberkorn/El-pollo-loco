@@ -66,7 +66,7 @@ class MovableObject extends DrawableObject {
    * Reduces the object's energy when hit and updates the last hit  stamp.
    */
   hit() {
-    this.energy -= 0.3;
+    this.energy -= 0.32;
     if (this.energy < 0) {
       this.energy = 0;
     } else {

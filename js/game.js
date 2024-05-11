@@ -6,6 +6,7 @@ let attack_sound = new Audio("audio/attack.mp3");
 let welcomesound = new Audio("audio/audio_el_pollo_loco.mp3");
 let gameOverSound = new Audio("audio/game-over.mp3");
 let timeout;
+let ifMutet = false;
 /**
  * Initializes and starts the game by setting up the level, creating the game world, playing the welcome sound,
  * and binding necessary event handlers. This function is called to begin gameplay.
@@ -182,19 +183,26 @@ function hideLicenses() {
  * Updates the sound button icon based on the mute state.
  */
 function muteMusic() {
-  world.playGameSound.muted = !world.playGameSound.muted;
-  world.coin_sound.muted = !world.coin_sound.muted;
-  world.bottle_sound.muted = !world.bottle_sound.muted;
-  world.chicken_sound.muted = !world.chicken_sound.muted;
-  world.character.jumping_sound.muted = !world.character.jumping_sound.muted;
-  world.character.walking_sound.muted = !world.character.walking_sound.muted;
-
+  ifMutet = true;
+  sounds();
   let soundImage = document.getElementById("sound");
   if (world.playGameSound.muted) {
     soundImage.src = "img/buttons/mute.png";
   } else {
     soundImage.src = "img/buttons/sound.png";
   }
+}
+
+function sounds() {
+  world.playGameSound.muted = !world.playGameSound.muted;
+  world.coin_sound.muted = !world.coin_sound.muted;
+  world.bottle_sound.muted = !world.bottle_sound.muted;
+  world.chicken_sound.muted = !world.chicken_sound.muted;
+  world.character.jumping_sound.muted = !world.character.jumping_sound.muted;
+  world.character.walking_sound.muted = !world.character.walking_sound.muted;
+  attack_sound.muted = !attack_sound.muted;
+  win_sound.muted = !win_sound.muted;
+  gameOverSound.muted = !gameOverSound.muted;
 }
 
 /**
@@ -248,6 +256,7 @@ function exitFullscreen() {
  * This function is typically called when transitioning from a menu or start screen to the game itself.
  */
 function removeDnoneToPlay() {
+  document.getElementById("sound").src = "img/buttons/sound.png";
   document.getElementById("startscreen").classList.add("d-none");
   document.getElementById("playButton").classList.add("d-noneImp");
   document.getElementById("sound").classList.remove("d-none");
@@ -259,8 +268,10 @@ function removeDnoneToPlay() {
  * Pauses the game's background sound and plays the attack sound effect.
  */
 function attackSound() {
-  world.playGameSound.pause();
-  attack_sound.play();
+  if (ifMutet == false) {
+    world.playGameSound.pause();
+    attack_sound.play();
+  }
 }
 
 /**
@@ -271,18 +282,29 @@ function attackSound() {
 function gameOver(event) {
   clearAllGameSounds();
   if (event === "lost") {
-    gameOverSound.play();
-    clearAllIntervals();
-    showElementsOnEndScreen();
-    document.getElementById("startscreen").src = "img/lost.png";
+    lost();
   } else {
-    win_sound.play();
-    clearAllIntervals();
-    showElementsOnEndScreen();
-    document.getElementById("startscreen").src = "img/won.png";
+    win();
   }
 }
 
+function lost() {
+  if (ifMutet == false) {
+    gameOverSound.play();
+  }
+  clearAllIntervals();
+  showElementsOnEndScreen();
+  document.getElementById("startscreen").src = "img/lost.png";
+}
+
+function win() {
+  if (ifMutet == false) {
+    win_sound.play();
+  }
+  clearAllIntervals();
+  showElementsOnEndScreen();
+  document.getElementById("startscreen").src = "img/won.png";
+}
 /**
  * Modifies UI elements to reflect the end game screen, toggling visibility and styles.
  */
@@ -307,7 +329,8 @@ function clearAllGameSounds() {
  * This is a brute force approach to ensure no lingering intervals remain active.
  */
 function clearAllIntervals() {
-  for (let i = 1; i < 9999999; i++) window.clearInterval(i);
+  allIntervals.forEach((id) => clearInterval(id));
+  allIntervals.length = 0;
 }
 
 /**
@@ -352,4 +375,32 @@ function detectMobileDevice() {
  */
 function hasTouchEvents() {
   return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
+/**
+ * An array to store all active interval IDs.
+ */
+const allIntervals = [];
+
+/**
+ * Overwrites the window.setInterval function to track all interval IDs.
+ *
+ * @param {Function} callback - The function to be executed repeatedly after each interval.
+ * @param {number} interval - The time (in milliseconds) between each execution of the callback.
+ * @param {...any} args - Additional arguments that will be passed to the callback function.
+ * @returns {number} The ID of the new interval, which can be used to stop the interval later.
+ */
+const originalSetInterval = window.setInterval;
+window.setInterval = function (callback, interval, ...args) {
+  const id = originalSetInterval(callback, interval, ...args);
+  allIntervals.push(id);
+  return id;
+};
+/**
+ * Logs all active interval IDs to the console.
+ * !!! MUST BE CALLED MANUALLY !!!
+ * This is the reason why the console.log was not removed.
+ */
+function logActiveIntervals() {
+  console.log("Aktive Intervall-IDs:", allIntervals);
 }

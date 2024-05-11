@@ -10,17 +10,15 @@ class Endboss extends MovableObject {
   height = 450;
   y = 10;
   x = 450;
-  speed = 15;
+  speed = 25;
   offset = {
     x: 30, // left
-    y: 80, // top
+    y: -50, // top
     width: 30, // right
     height: 0, // bottom
   };
   dead_interval;
   bossAttackWalk;
-  win_sound = new Audio("audio/win.mp3");
-  attack_sound = new Audio("audio/attack.mp3");
   IMAGES_WALKING = [
     "../img/4_enemie_boss_chicken/1_walk/G1.png",
     "../img/4_enemie_boss_chicken/1_walk/G2.png",
@@ -118,11 +116,10 @@ class Endboss extends MovableObject {
    * If conditions are met (player near and not already angry), triggers attack animations and sounds.
    */
   setBossAngry() {
-    if (world.character.x > 2000 && !this.angry) {
+    if (world.character.x > 1800 && !this.angry) {
       this.bossAnimation();
       this.bossAttack();
       attackSound();
-      this.soundAttach();
       this.angry = true;
     }
   }
@@ -133,7 +130,7 @@ class Endboss extends MovableObject {
    * triggering the end of level or game win condition.
    */
   deadAnimation() {
-    if (!this.isAlive) {
+    if (!this.isAlive || this.hitsLeft === 0) {
       clearInterval(this.bossAttackWalk);
       this.playAnimation(this.IMAGES_DEAD);
       setTimeout(() => {
@@ -158,7 +155,7 @@ class Endboss extends MovableObject {
   bossAnimation() {
     this.i = 0;
     this.bossAttackWalk = setInterval(() => {
-      if (this.i < 10 && this.isAlive) {
+      if (this.i < 5 && this.isAlive) {
         this.playAnimation(this.IMAGES_ALERT);
       } else {
         this.playAnimation(this.IMAGES_ATTACK);
@@ -172,22 +169,24 @@ class Endboss extends MovableObject {
    */
   bossAttack() {
     setInterval(() => {
+      if (this.hitsLeft === 5) {
+        this.x -= 15;
+      }
+      if (this.hitsLeft === 4) {
+        this.x -= 16;
+      }
       if (this.hitsLeft === 3) {
-        this.x -= 5;
+        this.x -= 17;
       }
       if (this.hitsLeft === 2) {
-        this.x -= 10;
+        this.x -= 20;
       }
       if (this.hitsLeft === 1) {
-        this.x -= 15;
+        this.x -= 22;
       }
       if (this.hitsLeft === 0) {
         this.x -= 0;
       }
     }, 1000 / 6);
-  }
-
-  soundAttach() {
-    world.playGameSound.pause();
   }
 }

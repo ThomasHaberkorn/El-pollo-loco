@@ -102,7 +102,7 @@ canvas {
   width: 100%;
   max-height: 100%;
 
-  background-color: black;
+  background-color: #ff8e48;
   border-radius: 30px;
 }
 canvas:fullscreen {
@@ -279,6 +279,10 @@ h1 {
   color: white;
 }
 
+#mobileScreen {
+  display: none;
+}
+
 @media only screen and (max-width: 720px) {
   #canvasContainer {
     width: 100%;
@@ -293,25 +297,28 @@ h1 {
   }
 }
 
-@media (orientation: portrait) and (max-width: 500px) {
+@media (orientation: portrait) {
   #canvasContainer {
-    transform: rotate(90deg);
-    width: 100vh;
-    height: 100vw;
+    display: none;
   }
+  .mobileScreen {
+    display: block !important;
+    font-size: 24px;
+  }
+
   .infoContainer {
     display: none;
   }
 }
 
-/* @media (orientation: landscape) {
-  #left,
-  #right,
-  #throw,
-  #jump {
-    display: block;
+@media (orientation: landscape) {
+  .mobileScreen {
+    display: none;
   }
-} */
+  .startscreen {
+    object-fit: cover !important;
+  }
+}
 
 @media only screen and (max-height: 480px) {
   #canvasContainer {
